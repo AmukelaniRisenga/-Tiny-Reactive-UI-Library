@@ -1,0 +1,40 @@
+/**
+ * Mini Reactive UI Library
+ * Author: Amukelani Risenga
+ * Description: A tiny state-driven UI renderer inspired by React.
+ */
+
+class TinyUI {
+  constructor(initialState) {
+    this.state = initialState;
+    this.listeners = [];
+  }
+
+  setState(updates) {
+    this.state = { ...this.state, ...updates };
+    this.notify();
+  }
+
+  subscribe(listener) {
+    this.listeners.push(listener);
+    listener(this.state); // initial render
+  }
+
+  notify() {
+    this.listeners.forEach(listener => listener(this.state));
+  }
+}
+
+// Example usage
+const app = new TinyUI({ count: 0 });
+
+app.subscribe((state) => {
+  document.getElementById("app").innerHTML = `
+    <h1>Count: ${state.count}</h1>
+    <button id="inc">Increase</button>
+  `;
+  
+  document.getElementById("inc").onclick = () => {
+    app.setState({ count: state.count + 1 });
+  };
+});
